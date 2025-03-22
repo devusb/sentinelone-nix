@@ -1,13 +1,19 @@
 # sentinelone-nix
+
 ## About
+
 Package and module to use SentinelOne on NixOS. Based on the SentinelOne package from [GitLab](https://gitlab.com/gitlab-com/gl-infra/reliability).
 
 ## Usage
+
 To use this module, add it to your flake inputs as
+
 ```
 inputs.sentinelone.url = "github:devusb/sentinelone-nix";
 ```
+
 Then, import and use the module in your NixOS configuration as
+
 ```
 imports = [
     inputs.sentinelone.nixosModules.sentinelone
@@ -26,9 +32,11 @@ services.sentinelone = {
   });
 };
 ```
+
 overriding `package` to point to a URL where a SentinelOne `deb` is available.
 
 `sentinelOneManagementTokenPath` could be from a [sops-nix](https://github.com/Mic92/sops-nix) secret such as
+
 ```
 sops = {
   secrets.s1_mgmt_token = {

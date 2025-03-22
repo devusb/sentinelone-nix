@@ -40,6 +40,7 @@ let
     EOF
 
       chown -R sentinelone:sentinelone ${cfg.dataDir}
+      chmod -R 0755 $(find ${cfg.dataDir} -group sentinelone)
     fi
   '';
 in
@@ -87,6 +88,10 @@ in
         ExecStart = "${getExe initScript}";
       };
     };
+
+    environment.systemPackages = [
+      cfg.package
+    ];
 
     systemd.services.sentinelone = {
       enable = true;
