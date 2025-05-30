@@ -110,6 +110,7 @@ in
           "uptrack.service"
         ];
         RefuseManualStop = "yes";
+        StartLimitInterval = "90";
       };
       serviceConfig = {
         Type = "exec";
@@ -119,7 +120,6 @@ in
         WatchdogSec = "30s";
         Restart = "always";
         RestartSec = "4";
-        StartLimitIntervalSec = "90";
         StartLimitBurst = "4";
         MemoryMax = "18446744073709543424";
         ExecStop = "${cfg.package}/bin/sentinelctl control stop";
