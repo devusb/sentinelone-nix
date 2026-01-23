@@ -52,6 +52,8 @@ stdenv.mkDerivation {
     ln -s $out/opt/sentinelone/lib $out/lib
   '';
 
+  dontPatchELF = true;
+
   preFixup = ''
     patchelf --replace-needed libelf.so.0 libelf.so $out/opt/sentinelone/lib/libbpf.so
   '';
