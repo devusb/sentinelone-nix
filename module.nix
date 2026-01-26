@@ -67,19 +67,25 @@ in
         email = mkOption {
           type = types.nullOr types.str;
           default = null;
+          description = "Your email address, used to construct a unique customer ID. Deprecated in favour of customerId.";
           example = "me@gmail.com";
         };
         serialNumber = mkOption {
           type = types.nullOr types.str;
           default = null;
+          description = "Your host machines serial number, used to construct a unique customer ID. Deprecated in favour of customerId.";
           example = "FTXYZWW";
         };
         sentinelOneManagementTokenPath = mkOption {
           type = types.path;
+          description = ''
+            Path to file containing a SentinelOne management/site token. It is recommended to use a secret manager such a sops-nix or agenix.
+          '';
           example = "/run/secrets/s1_mgmt_token";
         };
         dataDir = mkOption {
           type = types.path;
+          description = "Directory in which the agent stores its runtime data.";
           default = "/var/lib/sentinelone";
         };
       };
