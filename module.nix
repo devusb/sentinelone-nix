@@ -19,7 +19,7 @@ let
 
     # initialize the data directory
     if [ -z "$(ls -A ${cfg.dataDir} 2>/dev/null)" ]; then
-      find "${cfg.package}/opt/sentinelone/" -mindepth 1 -maxdepth 1 ! -name "bin" ! -name "ebpfs" ! -name "lib" ! -name "ranger" -exec cp -r {} "${cfg.dataDir}/" \;
+      find "${cfg.package}/opt/sentinelone/" -mindepth 1 -maxdepth 1 ! -name "bin" ! -name "ebpfs" ! -name "ranger" -exec cp -r {} "${cfg.dataDir}/" \;
 
       cat << EOF > ${cfg.dataDir}/configuration/install_config
     S1_AGENT_MANAGEMENT_TOKEN=$(cat ${cfg.sentinelOneManagementTokenPath})
@@ -157,20 +157,21 @@ in
           "uptrack-prefetch.service"
           "uptrack.service"
         ];
+        RefuseManualStop = "yes";
         StartLimitInterval = "90";
         StartLimitBurst = "4";
       };
       serviceConfig = {
-        Type = "forking";
-        ExecStart = "${cfg.package}/bin/sentinelctl control run";
+        Type = "exec";
+        ExecStart = "${cfg.package}/bin/sentinelone-agent";
         WorkingDirectory = "/opt/sentinelone/bin";
         SyslogIdentifier = "${cfg.dataDir}/log";
-        WatchdogSec = "5s";
-        Restart = "always";
+        WatchdogSec = "30s";
+        Restart = "on-failure";
         RestartSec = "4";
         RefuseManualStop = "yes";
         MemoryMax = "18446744073709543424";
-        ExecStop = "${cfg.package}/bin/sentinelctl control shutdown";
+        ExecStop = "${cfg.package}/bin/sentinelctl control stop";
         NotifyAccess = "all";
         KillMode = "process";
         TasksMax = "infinity";
@@ -180,7 +181,6 @@ in
         BindReadOnlyPaths = [
           "${cfg.package}/opt/sentinelone/bin:/opt/sentinelone/bin"
           "${cfg.package}/opt/sentinelone/ebpfs:/opt/sentinelone/ebpfs"
-          "${cfg.package}/opt/sentinelone/lib:/opt/sentinelone/lib"
           "${cfg.package}/opt/sentinelone/ranger:/opt/sentinelone/ranger"
         ];
       };
