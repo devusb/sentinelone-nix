@@ -188,7 +188,6 @@ in
         Type = "exec";
         ExecStart = "${cfg.package}/opt/sentinelone/bin/sentinelone-agent";
         WorkingDirectory = "/opt/sentinelone/bin";
-        SyslogIdentifier = "${cfg.dataDir}/log";
         WatchdogSec = "30s";
         Restart = "on-failure";
         RestartSec = "4";
