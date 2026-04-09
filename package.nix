@@ -41,7 +41,6 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/opt/
-    mkdir -p $out/cfg/
     mkdir -p $out/bin/
 
     cp -r opt/* $out/opt
