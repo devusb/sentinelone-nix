@@ -195,7 +195,6 @@ in
         MemoryMax = "18446744073709543424";
         ExecStop = "${lib.getExe sentinelctlFhs} control stop";
         NotifyAccess = "all";
-        KillMode = "process";
         TasksMax = "infinity";
         BindPaths = [
           "${cfg.dataDir}:/opt/sentinelone"
