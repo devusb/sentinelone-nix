@@ -48,6 +48,10 @@ let
       chmod -R 0755 $(find ${cfg.dataDir} -group sentinelone)
     fi
   '';
+  sentinelctlFhs = pkgs.buildFHSEnv {
+    name = "sentinelctl";
+    runScript = "/opt/sentinelone/bin/sentinelctl";
+  };
 in
 {
   options = {
@@ -139,6 +143,7 @@ in
 
     environment.systemPackages = [
       cfg.package
+      sentinelctlFhs
     ];
 
     systemd.services.sentinelone = {
@@ -171,7 +176,7 @@ in
         RestartSec = "4";
         RefuseManualStop = "yes";
         MemoryMax = "18446744073709543424";
-        ExecStop = "${cfg.package}/bin/sentinelctl control stop";
+        ExecStop = "${lib.getExe sentinelctlFhs} control stop";
         NotifyAccess = "all";
         KillMode = "process";
         TasksMax = "infinity";
