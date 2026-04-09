@@ -41,13 +41,8 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/opt/
-    mkdir -p $out/bin/
 
     cp -r opt/* $out/opt
-
-    ln -s $out/opt/sentinelone/bin/sentinelone-agent $out/bin/sentinelone-agent
-    ln -s $out/opt/sentinelone/bin/sentinelone-watchdog $out/bin/sentinelone-watchdog
-    ln -s $out/opt/sentinelone/lib $out/lib
   '';
 
   dontAutoPatchelf = true;
