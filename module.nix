@@ -193,6 +193,7 @@ in
         RestartSec = "4";
         RefuseManualStop = "yes";
         ExecStop = "${lib.getExe sentinelctlFhs} control stop";
+        MemoryAccounting = "yes";
         NotifyAccess = "all";
         TasksMax = "infinity";
         BindPaths = [
