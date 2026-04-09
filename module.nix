@@ -192,7 +192,6 @@ in
         Restart = "on-failure";
         RestartSec = "4";
         RefuseManualStop = "yes";
-        MemoryMax = "18446744073709543424";
         ExecStop = "${lib.getExe sentinelctlFhs} control stop";
         NotifyAccess = "all";
         TasksMax = "infinity";
