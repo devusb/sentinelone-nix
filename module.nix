@@ -191,7 +191,6 @@ in
         WatchdogSec = "30s";
         Restart = "on-failure";
         RestartSec = "4";
-        RefuseManualStop = "yes";
         ExecStop = "${lib.getExe sentinelctlFhs} control stop";
         MemoryAccounting = "yes";
         NotifyAccess = "all";
