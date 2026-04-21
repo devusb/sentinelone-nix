@@ -41,20 +41,20 @@ stdenv.mkDerivation {
 
   installPhase = ''
     mkdir -p $out/opt/
-    mkdir -p $out/cfg/
-    mkdir -p $out/bin/
 
     cp -r opt/* $out/opt
-
-    ln -s $out/opt/sentinelone/bin/sentinelctl $out/bin/sentinelctl
-    ln -s $out/opt/sentinelone/bin/sentinelone-agent $out/bin/sentinelone-agent
-    ln -s $out/opt/sentinelone/bin/sentinelone-watchdog $out/bin/sentinelone-watchdog
-    ln -s $out/opt/sentinelone/lib $out/lib
   '';
 
+  dontAutoPatchelf = true;
   dontPatchELF = true;
 
   preFixup = ''
     patchelf --replace-needed libelf.so.0 libelf.so $out/opt/sentinelone/lib/libbpf.so
+  '';
+
+  postFixup = ''
+    shopt -s extglob
+    addAutoPatchelfSearchPath $out/opt/sentinelone/lib
+    autoPatchelf $out/opt/sentinelone/!(bin) $out/opt/sentinelone/bin/!(sentinelctl)
   '';
 }
