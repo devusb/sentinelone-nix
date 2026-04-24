@@ -52,6 +52,24 @@ let
     name = "sentinelctl";
     runScript = "/opt/sentinelone/bin/sentinelctl";
   };
+  sentinelctlScript = pkgs.writeShellApplication {
+    name = "sentinelctl";
+    runtimeInputs = with pkgs; [
+      config.systemd.package
+      util-linux
+      sentinelctlFhs
+    ];
+    text = ''
+      if [ "$EUID" -ne 0 ]; then
+        echo "$0 must be run with root privileges"
+        exit 1
+      fi
+
+      exec nsenter --all \
+        --target "$(systemctl show -P MainPID sentinelone)" \
+        -- sentinelctl "$@"
+    '';
+  };
 in
 {
   options = {
@@ -143,7 +161,7 @@ in
 
     environment.systemPackages = [
       cfg.package
-      sentinelctlFhs
+      sentinelctlScript
     ];
 
     systemd.services.sentinelone = {
