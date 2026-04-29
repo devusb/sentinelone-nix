@@ -188,15 +188,12 @@ in
         Type = "exec";
         ExecStart = "${cfg.package}/opt/sentinelone/bin/sentinelone-agent";
         WorkingDirectory = "/opt/sentinelone/bin";
-        SyslogIdentifier = "${cfg.dataDir}/log";
         WatchdogSec = "30s";
         Restart = "on-failure";
         RestartSec = "4";
-        RefuseManualStop = "yes";
-        MemoryMax = "18446744073709543424";
         ExecStop = "${lib.getExe sentinelctlFhs} control stop";
+        MemoryAccounting = "yes";
         NotifyAccess = "all";
-        KillMode = "process";
         TasksMax = "infinity";
         BindPaths = [
           "${cfg.dataDir}:/opt/sentinelone"
