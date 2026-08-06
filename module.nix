@@ -174,6 +174,7 @@ in
       "/opt/sentinelone/bin" = {
         device = "${cfg.package}/opt/sentinelone/bin";
         fsType = "none";
+        depends = [ "/opt/sentinelone" ];
         options = [
           "bind"
           "ro"
@@ -182,6 +183,7 @@ in
       "/opt/sentinelone/ebpfs" = {
         device = "${cfg.package}/opt/sentinelone/ebpfs";
         fsType = "none";
+        depends = [ "/opt/sentinelone" ];
         options = [
           "bind"
           "ro"
@@ -190,6 +192,7 @@ in
       "/opt/sentinelone/lib" = {
         device = "${cfg.package}/opt/sentinelone/lib";
         fsType = "none";
+        depends = [ "/opt/sentinelone" ];
         options = [
           "bind"
           "ro"
@@ -198,6 +201,7 @@ in
       "/opt/sentinelone/ranger" = {
         device = "${cfg.package}/opt/sentinelone/ranger";
         fsType = "none";
+        depends = [ "/opt/sentinelone" ];
         options = [
           "bind"
           "ro"
