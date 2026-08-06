@@ -153,6 +153,13 @@ in
     systemd.services.sentinelone-init = {
       wantedBy = [ "sentinelone.service" ];
       before = [ "sentinelone.service" ];
+      unitConfig.RequiresMountsFor = [
+        "/opt/sentinelone"
+        "/opt/sentinelone/bin"
+        "/opt/sentinelone/ebpfs"
+        "/opt/sentinelone/lib"
+        "/opt/sentinelone/ranger"
+      ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${getExe initScript}";
@@ -163,6 +170,50 @@ in
       cfg.package
       sentinelctlScript
     ];
+
+    fileSystems = {
+      "/opt/sentinelone" = {
+        device = cfg.dataDir;
+        fsType = "none";
+        options = [ "bind" ];
+      };
+      "/opt/sentinelone/bin" = {
+        device = "${cfg.package}/opt/sentinelone/bin";
+        fsType = "none";
+        depends = [ "/opt/sentinelone" ];
+        options = [
+          "bind"
+          "ro"
+        ];
+      };
+      "/opt/sentinelone/ebpfs" = {
+        device = "${cfg.package}/opt/sentinelone/ebpfs";
+        fsType = "none";
+        depends = [ "/opt/sentinelone" ];
+        options = [
+          "bind"
+          "ro"
+        ];
+      };
+      "/opt/sentinelone/lib" = {
+        device = "${cfg.package}/opt/sentinelone/lib";
+        fsType = "none";
+        depends = [ "/opt/sentinelone" ];
+        options = [
+          "bind"
+          "ro"
+        ];
+      };
+      "/opt/sentinelone/ranger" = {
+        device = "${cfg.package}/opt/sentinelone/ranger";
+        fsType = "none";
+        depends = [ "/opt/sentinelone" ];
+        options = [
+          "bind"
+          "ro"
+        ];
+      };
+    };
 
     systemd.services.sentinelone = {
       enable = true;
@@ -183,6 +234,13 @@ in
         RefuseManualStop = "yes";
         StartLimitInterval = "90";
         StartLimitBurst = "4";
+        RequiresMountsFor = [
+          "/opt/sentinelone"
+          "/opt/sentinelone/bin"
+          "/opt/sentinelone/ebpfs"
+          "/opt/sentinelone/lib"
+          "/opt/sentinelone/ranger"
+        ];
       };
       serviceConfig = {
         Type = "exec";
@@ -195,14 +253,6 @@ in
         MemoryAccounting = "yes";
         NotifyAccess = "all";
         TasksMax = "infinity";
-        BindPaths = [
-          "${cfg.dataDir}:/opt/sentinelone"
-        ];
-        BindReadOnlyPaths = [
-          "${cfg.package}/opt/sentinelone/bin:/opt/sentinelone/bin"
-          "${cfg.package}/opt/sentinelone/ebpfs:/opt/sentinelone/ebpfs"
-          "${cfg.package}/opt/sentinelone/ranger:/opt/sentinelone/ranger"
-        ];
       };
       wantedBy = [ "multi-user.target" ];
     };
