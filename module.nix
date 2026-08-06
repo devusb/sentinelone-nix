@@ -153,7 +153,13 @@ in
     systemd.services.sentinelone-init = {
       wantedBy = [ "sentinelone.service" ];
       before = [ "sentinelone.service" ];
-      unitConfig.RequiresMountsFor = [ "/opt/sentinelone" ];
+      unitConfig.RequiresMountsFor = [
+        "/opt/sentinelone"
+        "/opt/sentinelone/bin"
+        "/opt/sentinelone/ebpfs"
+        "/opt/sentinelone/lib"
+        "/opt/sentinelone/ranger"
+      ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${getExe initScript}";
