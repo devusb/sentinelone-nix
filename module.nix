@@ -18,7 +18,7 @@ let
     mkdir -p ${cfg.dataDir}
 
     # initialize the data directory
-    if [ -z "$(ls -A ${cfg.dataDir} 2>/dev/null)" ]; then
+    if [ -z "$(ls -A ${cfg.dataDir}/configuration 2>/dev/null)" ]; then
       find "${cfg.package}/opt/sentinelone/" -mindepth 1 -maxdepth 1 ! -name "bin" ! -name "ebpfs" ! -name "ranger" -exec cp -r {} "${cfg.dataDir}/" \;
 
       cat << EOF > ${cfg.dataDir}/configuration/install_config
