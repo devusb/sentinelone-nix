@@ -40,6 +40,10 @@ pkgs.nixosTest {
     start_all()
 
     withoutCustomerId.wait_for_unit("sentinelone.service")
+    withoutCustomerId.succeed("mountpoint -q /opt/sentinelone")
+    withoutCustomerId.succeed("touch /opt/sentinelone/lib/.write-test && rm /opt/sentinelone/lib/.write-test")
+    withoutCustomerId.fail("touch /opt/sentinelone/bin/.write-test")
+    withoutCustomerId.fail("grep -q sentinelone /etc/fstab")
 
     withCustomerId.wait_for_unit("sentinelone.service")
 
