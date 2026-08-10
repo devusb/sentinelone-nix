@@ -182,7 +182,7 @@ in
         what = "${cfg.package}/opt/sentinelone/bin";
         where = "/opt/sentinelone/bin";
         type = "none";
-        options = "bind,ro";
+        options = "bind,ro,nofail";
         requires = [
           "opt-sentinelone.mount"
           "sentinelone-init.service"
@@ -198,7 +198,7 @@ in
         what = "${cfg.package}/opt/sentinelone/ebpfs";
         where = "/opt/sentinelone/ebpfs";
         type = "none";
-        options = "bind,ro";
+        options = "bind,ro,nofail";
         requires = [
           "opt-sentinelone.mount"
           "sentinelone-init.service"
@@ -214,7 +214,7 @@ in
         what = "${cfg.package}/opt/sentinelone/ranger";
         where = "/opt/sentinelone/ranger";
         type = "none";
-        options = "bind,ro";
+        options = "bind,ro,nofail";
         requires = [
           "opt-sentinelone.mount"
           "sentinelone-init.service"

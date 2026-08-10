@@ -44,6 +44,7 @@ pkgs.nixosTest {
     withoutCustomerId.succeed("touch /opt/sentinelone/lib/.write-test && rm /opt/sentinelone/lib/.write-test")
     withoutCustomerId.fail("touch /opt/sentinelone/bin/.write-test")
     withoutCustomerId.fail("grep -q sentinelone /etc/fstab")
+    withoutCustomerId.fail("journalctl -b --grep='ordering cycle' --quiet")
 
     withCustomerId.wait_for_unit("sentinelone.service")
 
