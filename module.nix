@@ -30,8 +30,6 @@ let
       "opt-sentinelone.mount"
       "sentinelone-init.service"
     ];
-    wantedBy = [ "sentinelone.service" ];
-    before = [ "sentinelone.service" ];
   };
   initScript = pkgs.writeShellScriptBin "sentinelone-init.sh" ''
     #!/bin/bash
