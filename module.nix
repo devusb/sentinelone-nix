@@ -17,6 +17,22 @@ let
     "ebpfs"
     "ranger"
   ];
+  mkBindMount = path: {
+    what = "${cfg.package}/opt/sentinelone/${path}";
+    where = "/opt/sentinelone/${path}";
+    type = "none";
+    options = "bind,ro";
+    requires = [
+      "opt-sentinelone.mount"
+      "sentinelone-init.service"
+    ];
+    after = [
+      "opt-sentinelone.mount"
+      "sentinelone-init.service"
+    ];
+    wantedBy = [ "sentinelone.service" ];
+    before = [ "sentinelone.service" ];
+  };
   initScript = pkgs.writeShellScriptBin "sentinelone-init.sh" ''
     #!/bin/bash
 
@@ -180,55 +196,8 @@ in
         type = "none";
         options = "bind";
       }
-      {
-        what = "${cfg.package}/opt/sentinelone/bin";
-        where = "/opt/sentinelone/bin";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-      {
-        what = "${cfg.package}/opt/sentinelone/ebpfs";
-        where = "/opt/sentinelone/ebpfs";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-      {
-        what = "${cfg.package}/opt/sentinelone/ranger";
-        where = "/opt/sentinelone/ranger";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-    ];
+    ]
+    ++ map mkBindMount mountPaths;
 
     systemd.services.sentinelone = {
       enable = true;
