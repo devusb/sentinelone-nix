@@ -30,6 +30,11 @@ let
       "opt-sentinelone.mount"
       "sentinelone-init.service"
     ];
+    unitConfig = {
+      DefaultDependencies = "no";
+      Conflicts = "umount.target";
+      Before = "umount.target";
+    };
   };
   initScript = pkgs.writeShellScriptBin "sentinelone-init.sh" ''
     #!/bin/bash
