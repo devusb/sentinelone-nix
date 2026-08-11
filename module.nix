@@ -12,6 +12,11 @@ let
       if cfg.email != null && cfg.serialNumber != null then "${cfg.email}-${cfg.serialNumber}" else null
     );
   hasCustomerId = customerId != null;
+  mountPaths = [
+    "bin"
+    "ebpfs"
+    "ranger"
+  ];
   initScript = pkgs.writeShellScriptBin "sentinelone-init.sh" ''
     #!/bin/bash
 
@@ -244,12 +249,7 @@ in
         RefuseManualStop = "yes";
         StartLimitInterval = "90";
         StartLimitBurst = "4";
-        RequiresMountsFor = [
-          "/opt/sentinelone/bin"
-          "/opt/sentinelone/ebpfs"
-          "/opt/sentinelone/lib"
-          "/opt/sentinelone/ranger"
-        ];
+        RequiresMountsFor = map (path: "/opt/sentinelone/${path}") mountPaths;
       };
       serviceConfig = {
         Type = "exec";
