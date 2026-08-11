@@ -19,7 +19,7 @@ aXRlX2tleSI6ICJmM2M4N2IyZTlhMWQ0YzZlIn0KCg==";
     };
   };
 in
-pkgs.nixosTest {
+pkgs.testers.nixosTest {
   name = "sentinelone";
   nodes = {
     withoutCustomerId = defaultTestAttrs;

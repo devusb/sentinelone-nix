@@ -34,7 +34,8 @@
       {
         imports = [
           inputs.flake-parts.flakeModules.easyOverlay
-        ] ++ (if inputs.treefmt-nix ? flakeModule then [ inputs.treefmt-nix.flakeModule ] else [ ]);
+        ]
+        ++ (if inputs.treefmt-nix ? flakeModule then [ inputs.treefmt-nix.flakeModule ] else [ ]);
         systems = [
           "x86_64-linux"
         ];
@@ -68,7 +69,7 @@
             treefmt = {
               programs.nixfmt = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
+                package = pkgs.nixfmt;
               };
               programs.mdformat.enable = true;
             };
