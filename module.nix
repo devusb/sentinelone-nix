@@ -157,7 +157,6 @@ in
     systemd.services.sentinelone-init = {
       wantedBy = [ "sentinelone.service" ];
       before = [ "sentinelone.service" ];
-      unitConfig.RequiresMountsFor = [ "/opt/sentinelone" ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${getExe initScript}";
@@ -175,8 +174,6 @@ in
         where = "/opt/sentinelone";
         type = "none";
         options = "bind";
-        wantedBy = [ "sentinelone-init.service" ];
-        before = [ "sentinelone-init.service" ];
       }
       {
         what = "${cfg.package}/opt/sentinelone/bin";
