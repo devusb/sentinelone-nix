@@ -53,6 +53,12 @@
 
             packages = {
               sentinelone = pkgs.callPackage ./package.nix { };
+              # VM test using the real agent package, not publicly fetchable
+              vmtest = import ./test.nix {
+                inherit lib pkgs;
+                inherit (self) nixosModules;
+                stub = false;
+              };
             };
 
             checks = {
