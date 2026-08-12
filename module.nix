@@ -12,6 +12,30 @@ let
       if cfg.email != null && cfg.serialNumber != null then "${cfg.email}-${cfg.serialNumber}" else null
     );
   hasCustomerId = customerId != null;
+  mountPaths = [
+    "bin"
+    "ebpfs"
+    "ranger"
+  ];
+  mkBindMount = path: {
+    what = "${cfg.package}/opt/sentinelone/${path}";
+    where = "/opt/sentinelone/${path}";
+    type = "none";
+    options = "bind,ro";
+    requires = [
+      "opt-sentinelone.mount"
+      "sentinelone-init.service"
+    ];
+    after = [
+      "opt-sentinelone.mount"
+      "sentinelone-init.service"
+    ];
+    unitConfig = {
+      DefaultDependencies = "no";
+      Conflicts = "umount.target";
+      Before = "umount.target";
+    };
+  };
   initScript = pkgs.writeShellScriptBin "sentinelone-init.sh" ''
     #!/bin/bash
 
@@ -157,7 +181,6 @@ in
     systemd.services.sentinelone-init = {
       wantedBy = [ "sentinelone.service" ];
       before = [ "sentinelone.service" ];
-      unitConfig.RequiresMountsFor = [ "/opt/sentinelone" ];
       serviceConfig = {
         Type = "oneshot";
         ExecStart = "${getExe initScript}";
@@ -175,58 +198,9 @@ in
         where = "/opt/sentinelone";
         type = "none";
         options = "bind";
-        wantedBy = [ "sentinelone-init.service" ];
-        before = [ "sentinelone-init.service" ];
       }
-      {
-        what = "${cfg.package}/opt/sentinelone/bin";
-        where = "/opt/sentinelone/bin";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-      {
-        what = "${cfg.package}/opt/sentinelone/ebpfs";
-        where = "/opt/sentinelone/ebpfs";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-      {
-        what = "${cfg.package}/opt/sentinelone/ranger";
-        where = "/opt/sentinelone/ranger";
-        type = "none";
-        options = "bind,ro";
-        requires = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        after = [
-          "opt-sentinelone.mount"
-          "sentinelone-init.service"
-        ];
-        wantedBy = [ "sentinelone.service" ];
-        before = [ "sentinelone.service" ];
-      }
-    ];
+    ]
+    ++ map mkBindMount mountPaths;
 
     systemd.services.sentinelone = {
       enable = true;
@@ -247,13 +221,7 @@ in
         RefuseManualStop = "yes";
         StartLimitInterval = "90";
         StartLimitBurst = "4";
-        RequiresMountsFor = [
-          "/opt/sentinelone"
-          "/opt/sentinelone/bin"
-          "/opt/sentinelone/ebpfs"
-          "/opt/sentinelone/lib"
-          "/opt/sentinelone/ranger"
-        ];
+        RequiresMountsFor = map (path: "/opt/sentinelone/${path}") mountPaths;
       };
       serviceConfig = {
         Type = "exec";
