@@ -2,8 +2,21 @@
   lib,
   pkgs,
   nixosModules,
+  stub ? true,
 }:
 let
+  agentStub = pkgs.writeShellScript "sentinelone-agent" ''
+    while true; do
+      ${pkgs.systemd}/bin/systemd-notify WATCHDOG=1 || true
+      sleep 10
+    done
+  '';
+  # fake agent package providing everything module.nix expects from cfg.package
+  stubPackage = pkgs.runCommand "sentinelone-stub" { } ''
+    mkdir -p $out/opt/sentinelone/{bin,ebpfs,ranger,lib,configuration}
+    install -m 755 ${agentStub} $out/opt/sentinelone/bin/sentinelone-agent
+    install -m 755 ${pkgs.writeShellScript "sentinelctl" ""} $out/opt/sentinelone/bin/sentinelctl
+  '';
   defaultTestAttrs = {
     imports = [
       nixosModules.default
@@ -16,11 +29,12 @@ let
       # base64 encoded config with fake site key
       sentinelOneManagementTokenPath = pkgs.writeText "s1_token" "eyJ1cmwiOiAiaHR0cHM6Ly9zZW50aW5lbG9uZS1wcm9ncmFtLnNlbnRpbmVsb25lLm5ldCIsICJz
 aXRlX2tleSI6ICJmM2M4N2IyZTlhMWQ0YzZlIn0KCg==";
-    };
+    }
+    // lib.optionalAttrs stub { package = stubPackage; };
   };
 in
-pkgs.nixosTest {
-  name = "sentinelone";
+pkgs.testers.nixosTest {
+  name = "sentinelone" + lib.optionalString stub "-stub";
   nodes = {
     withoutCustomerId = defaultTestAttrs;
 

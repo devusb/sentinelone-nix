@@ -34,7 +34,8 @@
       {
         imports = [
           inputs.flake-parts.flakeModules.easyOverlay
-        ] ++ (if inputs.treefmt-nix ? flakeModule then [ inputs.treefmt-nix.flakeModule ] else [ ]);
+        ]
+        ++ (if inputs.treefmt-nix ? flakeModule then [ inputs.treefmt-nix.flakeModule ] else [ ]);
         systems = [
           "x86_64-linux"
         ];
@@ -52,6 +53,12 @@
 
             packages = {
               sentinelone = pkgs.callPackage ./package.nix { };
+              # VM test using the real agent package, not publicly fetchable
+              vmtest = import ./test.nix {
+                inherit lib pkgs;
+                inherit (self) nixosModules;
+                stub = false;
+              };
             };
 
             checks = {
@@ -68,7 +75,7 @@
             treefmt = {
               programs.nixfmt = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
+                package = pkgs.nixfmt;
               };
               programs.mdformat.enable = true;
             };
